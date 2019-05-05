@@ -10,6 +10,10 @@ start_start=font.render("开始",True,(0,0,0)).convert_alpha()
 start_start_rect=start_start.get_rect()
 start_start_rect.x=240
 start_start_rect.y=500
+start_exit=font.render("退出",True,(0,0,0)).convert_alpha()
+start_exit_rect=start_exit.get_rect()
+start_exit_rect.x=240
+start_exit_rect.y=600
 
 play_map=[]
 i,j=0,0
@@ -23,16 +27,50 @@ while i<=30:
 del i,j,line
 player='b'
 
+black=font.render("黑方",True,(0,0,0)).convert_alpha()
+white=font.render("白方",True,(0,0,0)).convert_alpha()
+over_won=font.render("胜利",True,(0,0,0)).convert_alpha()
+
 def check_color(what):
     if what=='b':return (0,0,0)
     elif what=='w':return (255,255,255)
 
+def check_eat(x,y):
+    global play_map,winner,winners,now
+    #横向找
+    i=0;time=1;who=None
+    while i<=30:
+        if play_map[i][y]==who and who!=' ':
+            time+=1
+            if time==5:
+                winner=who
+                winners.append((i,y))
+                now=2
+        else:
+            time=1;who=play_map[i][y];winners=[(i,y)]
+        i+=1
+    #纵向找
+    j=0;time=1;who=None
+    while j<=30:
+        if play_map[x][j]==who and who!=' ':
+            time+=1
+            if time==5:
+                winner=who
+                winners.append((x,j))
+                now=2
+        else:
+            time=1;who=play_map[x][j];winners=[(x,j)]
+        j+=1
+
 def start():
-    global screen,pos,now,start_caption,start_start,start_start,start_start_rect
+    global screen,pos,now,start_caption,start_start,start_start_rect,start_exit,start_exit_rect
     screen.blit(start_caption,(210,150))
     if start_start_rect.collidepoint(pos):
         screen.fill((200,200,200),start_start_rect)
+    elif start_exit_rect.collidepoint(pos):
+        screen.fill((200,200,200),start_exit_rect)
     screen.blit(start_start,start_start_rect)
+    screen.blit(start_exit,start_exit_rect)
 
 def play():
     global screen,play_map,player
@@ -53,7 +91,12 @@ def play():
         x+=1;y=0
 
 def over():
-    pass
+    global screen,black,white,winner,over_won
+    if winner=='b':
+        screen.blit(black,(0,0))
+    else:
+        screen.blit(white,(0,0))
+    screen.blit(over_won,(black.get_rect().width,0))
 
 now=0
 up=(start,play,over)
@@ -70,11 +113,15 @@ while True:
                 x=round(pos[0]/20);y=round(pos[1]/20)
                 if not check_color(play_map[x][y]):
                     play_map[x][y]=player
+                    check_eat(x,y)
                     if player=='w':player='b'
                     else:player='w'
             elif now==0:
                 if start_start_rect.collidepoint(event.pos):
                     now=1
+                elif start_exit_rect.collidepoint(event.pos):
+                    pygame.quit()
+                    sys.exit()
         elif event.type==pygame.QUIT:
             pygame.quit()
             sys.exit()
