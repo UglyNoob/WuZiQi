@@ -35,12 +35,14 @@ def start():
     screen.blit(start_start,start_start_rect)
 
 def play():
-    global screen,play_map
+    global screen,play_map,player
     x,y=0,0
     while x<=30:
         pygame.draw.line(screen,(0,0,0),(x*20,0),(x*20,600))
         pygame.draw.line(screen,(0,0,0),(0,x*20),(600,x*20))
         x+=1
+    if pos[0]<=600 and pos[1]<=600:
+        pygame.draw.circle(screen,check_color(player),(round(pos[0]/20)*20,round(pos[1]/20)*20),10)
     x=0
     while x<=30:
         while y<=30:
@@ -64,7 +66,13 @@ while True:
     pygame.display.update()
     for event in pygame.event.get():
         if event.type==pygame.MOUSEBUTTONDOWN:
-            if now==0:
+            if now==1 and pos[0]<=600 and pos[1]<=600:
+                x=round(pos[0]/20);y=round(pos[1]/20)
+                if not check_color(play_map[x][y]):
+                    play_map[x][y]=player
+                    if player=='w':player='b'
+                    else:player='w'
+            elif now==0:
                 if start_start_rect.collidepoint(event.pos):
                     now=1
         elif event.type==pygame.QUIT:
