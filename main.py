@@ -10,7 +10,6 @@ start_start=font.render("开始",True,(0,0,0)).convert_alpha()
 start_start_rect=start_start.get_rect()
 start_start_rect.x=240
 start_start_rect.y=500
-print(start_start_rect.x)
 
 play_map=[]
 i,j=0,0
@@ -26,7 +25,8 @@ player='b'
 def start():
     global screen,pos,now,start_caption,start_start,start_start,start_start_rect
     screen.blit(start_caption,(210,150))
-    
+    if start_start_rect.collidepoint(pos):
+        screen.fill((200,200,200),start_start_rect)
     screen.blit(start_start,start_start_rect)
 
 def play():
@@ -45,6 +45,10 @@ while True:
     up[now]()
     pygame.display.update()
     for event in pygame.event.get():
-        if event.type==pygame.QUIT:
+        if event.type==pygame.MOUSEBUTTONDOWN:
+            if now==0:
+                if start_start_rect.collidepoint(event.pos):
+                    now=1
+        elif event.type==pygame.QUIT:
             pygame.quit()
             sys.exit()
