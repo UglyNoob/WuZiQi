@@ -18,9 +18,14 @@ while i<=30:
     while j<=30:
         line.append(' ')
         j+=1
-    i+=1
+    play_map.append(line)
+    i+=1;j=0
 del i,j,line
 player='b'
+
+def check_color(what):
+    if what=='b':return (0,0,0)
+    elif what=='w':return (255,255,255)
 
 def start():
     global screen,pos,now,start_caption,start_start,start_start,start_start_rect
@@ -30,7 +35,20 @@ def start():
     screen.blit(start_start,start_start_rect)
 
 def play():
-    pass
+    global screen,play_map
+    x,y=0,0
+    while x<=30:
+        pygame.draw.line(screen,(0,0,0),(x*20,0),(x*20,600))
+        pygame.draw.line(screen,(0,0,0),(0,x*20),(600,x*20))
+        x+=1
+    x=0
+    while x<=30:
+        while y<=30:
+            color=check_color(play_map[x][y])
+            if color:
+                pygame.draw.circle(screen,color,(x*20,y*20),10)
+            y+=1
+        x+=1;y=0
 
 def over():
     pass
