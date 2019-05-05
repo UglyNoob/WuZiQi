@@ -24,8 +24,9 @@ del i,j,line
 player='b'
 
 def start():
-    global screen,start_caption,start_start,start_start,start_start_rect
+    global screen,pos,now,start_caption,start_start,start_start,start_start_rect
     screen.blit(start_caption,(210,150))
+    
     screen.blit(start_start,start_start_rect)
 
 def play():
@@ -40,6 +41,7 @@ clock=pygame.time.Clock()
 while True:
     clock.tick(20)
     screen.fill((236,236,236))
+    pos=pygame.mouse.get_pos()
     up[now]()
     pygame.display.update()
     for event in pygame.event.get():
