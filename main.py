@@ -30,6 +30,7 @@ player='b'
 black=font.render("黑方",True,(0,0,0)).convert_alpha()
 white=font.render("白方",True,(0,0,0)).convert_alpha()
 over_won=font.render("胜利",True,(0,0,0)).convert_alpha()
+over_pos=black.get_rect().width
 
 def check_color(what):
     if what=='b':return (0,0,0)
@@ -44,10 +45,11 @@ def check_eat(x,y):
             time+=1
             if time==5:
                 winner=who
-                winners.append((i,y))
+                winners.append((i*20,y*20))
                 now=2
+                return
         else:
-            time=1;who=play_map[i][y];winners=[(i,y)]
+            time=1;who=play_map[i][y];winners=[(i*20,y*20)]
         i+=1
     #纵向找
     j=0;time=1;who=None
@@ -56,10 +58,11 @@ def check_eat(x,y):
             time+=1
             if time==5:
                 winner=who
-                winners.append((x,j))
+                winners.append((x*20,j*20))
                 now=2
+                return
         else:
-            time=1;who=play_map[x][j];winners=[(x,j)]
+            time=1;who=play_map[x][j];winners=[(x*20,j*20)]
         j+=1
 
 def start():
@@ -91,12 +94,27 @@ def play():
         x+=1;y=0
 
 def over():
-    global screen,black,white,winner,over_won
+    global screen,black,white,winner,winners,over_won,over_pos
+    x,y=0,0
+    while x<=30:
+        pygame.draw.line(screen,(0,0,0),(x*20,0),(x*20,600))
+        pygame.draw.line(screen,(0,0,0),(0,x*20),(600,x*20))
+        x+=1
+    x=0
+    while x<=30:
+        while y<=30:
+            color=check_color(play_map[x][y])
+            if color:
+                pygame.draw.circle(screen,color,(x*20,y*20),10)
+            y+=1
+        x+=1;y=0
+    pygame.draw.line(screen,(255,0,0),winners[0],winners[1])
+
     if winner=='b':
-        screen.blit(black,(0,0))
+        screen.blit(black,(0,600))
     else:
-        screen.blit(white,(0,0))
-    screen.blit(over_won,(black.get_rect().width,0))
+        screen.blit(white,(0,600))
+    screen.blit(over_won,(over_pos,600))
 
 now=0
 up=(start,play,over)
