@@ -26,11 +26,16 @@ while i<=30:
     i+=1;j=0
 del i,j,line
 player='b'
+play_now=font.render("当前为",True,(0,0,0)).convert_alpha()
 
 black=font.render("黑方",True,(0,0,0)).convert_alpha()
 white=font.render("白方",True,(0,0,0)).convert_alpha()
 over_won=font.render("胜利",True,(0,0,0)).convert_alpha()
 over_pos=black.get_rect().width
+
+back=font.render("返回",True,(0,0,0)).convert_alpha()
+back_rect=back.get_rect()
+back_rect.y=black.get_rect().height+600
 
 def check_color(what):
     if what=='b':return (0,0,0)
@@ -156,6 +161,10 @@ while True:
     screen.fill((236,236,236))
     pos=pygame.mouse.get_pos()
     up[now]()
+    if now>0:
+        if back_rect.collidepoint(pos):
+            screen.fill((200,200,200),back_rect)
+        screen.blit(back,back_rect)
     pygame.display.update()
     for event in pygame.event.get():
         if event.type==pygame.MOUSEBUTTONDOWN:
@@ -163,7 +172,7 @@ while True:
                 x=round(pos[0]/20);y=round(pos[1]/20)
                 if not check_color(play_map[x][y]):
                     play_map[x][y]=player
-                    print(player,"在",x,y,"的位置")
+                    #print(player,"在",x,y,"的位置")
                     check_eat(x,y)
                     if player=='w':player='b'
                     else:player='w'
@@ -173,6 +182,16 @@ while True:
                 elif start_exit_rect.collidepoint(event.pos):
                     pygame.quit()
                     sys.exit()
+            if now>0:
+                if back_rect.collidepoint(pos):
+                    player='b'
+                    x=0;y=0
+                    while x<=30:
+                        while y<=30:
+                            play_map[x][y]=' '
+                            y+=1
+                        x+=1;y=0
+                    now=0
         elif event.type==pygame.QUIT:
             pygame.quit()
             sys.exit()
