@@ -64,6 +64,38 @@ def check_eat(x,y):
         else:
             time=1;who=play_map[x][j];winners=[(x*20,j*20)]
         j+=1
+    #'/'方向找
+    i,j=x+y,0;time=1;who=None
+    if i>30:
+        j=i-30
+        i=30
+    while i>=0 and j<=30:
+        if play_map[i][j]==who and who != ' ':
+            time+=1
+            if time==5:
+                winner=who
+                winners.append((i*20,j*20))
+                now=2
+                return
+        else:
+            time=1;who=play_map[i][j];winners=[(i*20,j*20)]
+        i-=1;j+=1
+    #'\'方向找
+    i,j=x-y,0;time=1;who=None
+    if i<0:
+        j=j-i
+        i=0
+    while i<=30 and j<=30:
+        if play_map[i][j]==who and who != ' ':
+            time+=1
+            if time==5:
+                winner=who
+                winners.append((i*20,j*20))
+                now=2
+                return
+        else:
+            time=1;who=play_map[i][j];winners=[(i*20,j*20)]
+        i+=1;j+=1
 
 def start():
     global screen,pos,now,start_caption,start_start,start_start_rect,start_exit,start_exit_rect
@@ -131,6 +163,7 @@ while True:
                 x=round(pos[0]/20);y=round(pos[1]/20)
                 if not check_color(play_map[x][y]):
                     play_map[x][y]=player
+                    print(player,"在",x,y,"的位置")
                     check_eat(x,y)
                     if player=='w':player='b'
                     else:player='w'
